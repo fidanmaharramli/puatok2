@@ -1,0 +1,35 @@
+@model UserCreateVm
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<h1 class="h3 mb-4 text-gray-800">Create User</h1>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <p class="text-muted">New users receive the Member role.</p>
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <partial name="_UserFields" model="Model" />
+                    <div class="form-group">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" class="form-control" autocomplete="new-password" aria-describedby="password-help" />
+                        <small id="password-help" class="form-text text-muted">Use at least 6 characters, including uppercase, lowercase, a number and a symbol.</small>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

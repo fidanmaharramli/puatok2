@@ -1,0 +1,175 @@
+﻿@* Bu səhifə ChatController tərəfindən açılan MVC View-dur; @page direktivi lazım deyil. *@
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="row p-1">
+                <div class="col-1">Message</div>
+                <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
+            </div>
+            <div class="row p-1">
+                <div class="col-6 text-end">
+                    <input type="button" id="sendButton" value="Send Message" />
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-6">
+                    <hr />
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-6">
+                    <ul id="messagesList"></ul>
+                    @* Yazı vəziyyəti JavaScript ilə yenilənir; istifadəçi adı HTML kimi işlədilmir. *@
+                    <p id="typingIndicator" class="text-muted" role="status" aria-live="polite"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row p-1">
+                <div class="col-6">
+                    <h3>Users</h3>
+                    <ul id="usersList">
+                        @foreach (var user in ViewBag.UserId)
+                        {
+                            <li data-user-id ="@user.Id" > <span class="@((user.ConnectionId != null) ? "online" : "offline")"></span> @user.UserName</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/10.0.11/signalr.js" integrity="sha512-Z7gHR36L05e+ZqrQusA3zkuT3fVZCtz6huyhnTE7FWXUEnVOaSDISCI2EzRn3S0ah/LXnXfhUoHNMDoYfVHj2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+@section Scripts {
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        // Yazma başlanğıcı, son bildiriş vaxtı və iki saniyəlik dayanma taymeri saxlanır.
+        const messageInput = document.getElementById("messageInput");
+        const typingIndicator = document.getElementById("typingIndicator");
+        let isTyping = false;
+        let lastTypingSentAt = 0;
+        let typingTimeout;
+
+        // Hər bağlantı ayrıca saxlanır ki, bir nəfər dayananda digərlərinin bildirişi itməsin.
+        const typingUsers = new Map();
+
+        function renderTypingUsers() {
+            // Eyni hesab bir neçə tabda yazırsa, adı ekranda yalnız bir dəfə göstərilir.
+            const names = [...new Set([...typingUsers.values()].map(item => item.userName))];
+            typingIndicator.textContent = names.length ? `${names.join(", ")} yazır...` : "";
+        }
+
+        function removeTypingUser(connectionId) {
+            const entry = typingUsers.get(connectionId);
+            if (entry) {
+                clearTimeout(entry.timeout);
+                typingUsers.delete(connectionId);
+                renderTypingUsers();
+            }
+        }
+
+        function sendTyping(value) {
+            // Bağlantı hazır deyilsə, hub metodunu çağırmırıq.
+            if (connection.state !== signalR.HubConnectionState.Connected)
+                return;
+
+            connection.invoke("Typing", value).catch(err => console.error(err.toString()));
+        }
+
+        function stopTyping() {
+            clearTimeout(typingTimeout);
+            if (isTyping) {
+                isTyping = false;
+                sendTyping(false);
+            }
+        }
+
+        messageInput.addEventListener("input", function () {
+            // Boş mətn və ya hazır olmayan bağlantı yazma bildirişi yaratmır.
+            if (!messageInput.value.trim() || connection.state !== signalR.HubConnectionState.Connected) {
+                stopTyping();
+                return;
+            }
+
+            const now = Date.now();
+            // İlk hərfdə bildiriş gedir; davamlı yazıda hər hərfə yox, ən tez 1,5 saniyədə yenilənir.
+            if (!isTyping || now - lastTypingSentAt >= 1500) {
+                isTyping = true;
+                lastTypingSentAt = now;
+                sendTyping(true);
+            }
+
+            // Hər dəyişiklik taymeri yeniləyir; iki saniyə yazılmasa bildiriş bağlanır.
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(stopTyping, 2000);
+        });
+
+        // İstifadəçi mesaj sahəsindən çıxanda yazma vəziyyəti dayandırılır.
+        messageInput.addEventListener("blur", stopTyping);
+
+        connection.on("UserTyping", function (connectionId, userName, value) {
+            removeTypingUser(connectionId);
+            if (value) {
+                // Dayanma xəbəri itərsə belə, bildiriş son yenilənmədən beş saniyə sonra silinir.
+                const timeout = setTimeout(() => removeTypingUser(connectionId), 5000);
+                typingUsers.set(connectionId, { userName, timeout });
+                renderTypingUsers();
+            }
+        });
+
+        connection.onclose(function () {
+            // Öz bağlantımız kəsiləndə taymerlər və ekrandakı köhnə yazma vəziyyətləri təmizlənir.
+            stopTyping();
+            for (const connectionId of typingUsers.keys()) {
+                removeTypingUser(connectionId);
+            }
+        });
+
+        document.getElementById("sendButton").addEventListener("click", function (event) {
+            // Mesaj göndəriləndə yazma bildirişi də dayandırılır.
+            stopTyping();
+            var message = document.getElementById("messageInput").value;
+
+            // Ad göndərilmir: server mesajı login olmuş istifadəçinin adı ilə yayımlayır.
+            connection.invoke("SendMessage", message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault();
+        });
+        connection.on("ReceiveMessage", function (user, message) {
+            var li = document.createElement("li");
+            document.getElementById("messagesList").appendChild(li);
+            // We can assign user-supplied strings to an element's textContent because it
+            // is not interpreted as markup. If you're assigning in any other way, you
+            // should be aware of possible script injection concerns.
+            li.textContent = `${user}: ${message}`;
+        });
+
+        // Serverdən gələn istifadəçi ID-si ilə siyahıdakı dairə tapılır və yaşıl edilir.
+        connection.on("UserConnected", function (userId) {
+            const indicator = document.querySelector(`#usersList [data-user-id="${userId}"] span`);
+            if (indicator) {
+                indicator.classList.remove("offline");
+                indicator.classList.add("online");
+            }
+        });
+
+        // İstifadəçinin bağlantısı kəsiləndə həmin dairə boz edilir.
+        connection.on("UserDisconnected", function (userId) {
+            const indicator = document.querySelector(`#usersList [data-user-id="${userId}"] span`);
+            if (indicator) {
+                indicator.classList.remove("online");
+                indicator.classList.add("offline");
+            }
+        });
+
+        // Qoşulma zamanı gələn hadisələri tutmaq üçün bağlantı dinləyicilərdən sonra başladılır.
+        connection.start().catch(err => console.error(err.toString()));
+
+    </script>
+}

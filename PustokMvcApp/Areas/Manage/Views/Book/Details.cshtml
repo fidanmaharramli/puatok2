@@ -1,0 +1,53 @@
+@using PustokMvcApp.Models
+@model Book
+
+<h1>Book Details</h1>
+<h2>@Model.Name</h2>
+<p>@Model.Description</p>
+
+<p>Author: @Model.Author?.FullName</p>
+<p>Code: @Model.Code</p>
+<p>Price: @Model.Price.ToString("F2")</p>
+<p>Discount Percent: @Model.DiscountPercent%</p>
+
+@if (Model.DiscountPercent > 0)
+{
+    <p>Discounted Price: @((Model.Price - Model.Price * Model.DiscountPercent / 100m).ToString("F2"))</p>
+}
+
+<p>In Stock: @(Model.InStock ? "Yes" : "No")</p>
+<p>Featured: @(Model.IsFeatured ? "Yes" : "No")</p>
+<p>New: @(Model.IsNew ? "Yes" : "No")</p>
+
+<h3>Main Image</h3>
+@if (!string.IsNullOrWhiteSpace(Model.MainImageUrl))
+{
+    <img src="@Model.MainImageUrl" alt="@Model.Name" style="max-width: 200px; width: 100%; height: auto;" />
+}
+
+<h3>Hover Image</h3>
+@if (!string.IsNullOrWhiteSpace(Model.HoverImageUrl))
+{
+    <img src="@Model.HoverImageUrl" alt="@Model.Name" style="max-width: 200px; width: 100%; height: auto;" />
+}
+
+<h3>Additional Images</h3>
+<div class="d-flex flex-wrap mb-3">
+    @if (Model.BookImages != null)
+    {
+        foreach (var image in Model.BookImages)
+        {
+            <img src="@image.ImageUrl" alt="@Model.Name" width="100" height="100" class="mr-3 mb-2" style="object-fit: contain;" />
+        }
+    }
+</div>
+
+<h3>Tags</h3>
+<ul>
+    @foreach (var bookTag in Model.BookTags)
+    {
+        <li>@bookTag.Tag?.Name</li>
+    }
+</ul>
+
+<a asp-area="Manage" asp-controller="Book" asp-action="Index" asp-route-id="" class="btn btn-secondary">Back to List</a>

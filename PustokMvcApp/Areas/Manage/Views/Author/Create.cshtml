@@ -1,0 +1,15 @@
+﻿@using PustokMvcApp.Areas.Manage.ViewModels.AuthorVms
+@model AuthorCreateVm
+<form method="post">
+
+    <div class="form-group">
+        <label for="exampleInputPassword1">Full Name</label>
+        <input asp-for="FullName"  class="form-control" placeholder="Full Name">
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,267 @@
+﻿
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Email Confirmation - Pustok</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f3f5f9;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #253047;
+        }
+
+        .email-container {
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #182b49;
+            text-align: center;
+            padding: 35px 20px;
+        }
+
+        .logo {
+            color: #ffffff;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+            .logo span {
+                color: #f5b544;
+            }
+
+        .content {
+            padding: 45px 40px;
+            text-align: center;
+        }
+
+        .icon-box {
+            width: 76px;
+            height: 76px;
+            line-height: 76px;
+            background-color: #fff5e2;
+            border-radius: 50%;
+            margin: 0 auto 26px;
+            font-size: 34px;
+        }
+
+        h1 {
+            color: #182b49;
+            font-size: 26px;
+            line-height: 1.4;
+            margin: 0 0 18px;
+        }
+
+        .description {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.9;
+            margin: 0 0 26px;
+        }
+
+        .confirm-button {
+            display: inline-block;
+            background-color: #f5b544;
+            color: #182b49 !important;
+            padding: 17px 38px;
+            border-radius: 9px;
+            font-weight: bold;
+            font-size: 15px;
+            text-decoration: none;
+        }
+
+        .info-box {
+            background-color: #f7f9fc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 32px;
+            text-align: left;
+        }
+
+            .info-box p {
+                color: #64748b;
+                font-size: 13px;
+                line-height: 1.8;
+                margin: 0;
+            }
+
+        .footer {
+            background-color: #f8fafc;
+            padding: 28px;
+            text-align: center;
+            border-top: 1px solid #e8edf3;
+        }
+
+            .footer p {
+                color: #94a3b8;
+                font-size: 12px;
+                line-height: 1.8;
+                margin: 5px 0;
+            }
+
+        .fallback-link {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .email-container {
+                border-radius: 0;
+            }
+
+            .content {
+                padding: 35px 22px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .confirm-button {
+                display: block;
+                padding: 16px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f3f5f9;">
+
+    <table role="presentation" width="100%" cellpadding="0"
+           cellspacing="0" border="0"
+           style="background-color:#f3f5f9;">
+        <tr>
+            <td align="center" style="padding:40px 12px;">
+
+                <table role="presentation" class="email-container"
+                       width="100%" cellpadding="0"
+                       cellspacing="0" border="0"
+                       style="max-width:560px; background-color:#ffffff;">
+
+                    <!-- HEADER -->
+                    <tr>
+                        <td class="header" align="center"
+                            style="background-color:#182b49; padding:35px 20px;">
+
+                            <div class="logo"
+                                 style="color:#ffffff; font-size:30px; font-weight:800; letter-spacing:3px;">
+                                PUST<span style="color:#f5b544;">OK</span>
+                            </div>
+
+                            <p style="color:#b9c5d6; font-size:12px; letter-spacing:2px; margin:10px 0 0;">
+                                YOUR ONLINE BOOKSTORE
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- CONTENT -->
+                    <tr>
+                        <td class="content" align="center"
+                            style="padding:45px 40px; text-align:center;">
+
+                            <div class="icon-box"
+                                 style="width:76px; height:76px; line-height:76px; background-color:#fff5e2; border-radius:50%; margin:0 auto 26px; font-size:34px;">
+                                ✉️
+                            </div>
+
+                            <h1 style="font-size:26px; color:#182b49; margin:0 0 18px;">
+                                Email ünvanınızı təsdiqləyin
+                            </h1>
+
+                            <p style="font-size:16px; color:#253047; margin-bottom:15px;">
+                                Salam, <strong>{{UserName}}</strong>!
+                            </p>
+
+                            <p class="description"
+                               style="color:#64748b; font-size:15px; line-height:1.9;">
+                                Pustok ailəsinə xoş gəlmisiniz!
+                                Qeydiyyatınızı tamamlamaq və hesabınızı
+                                aktivləşdirmək üçün aşağıdakı düyməyə
+                                klik edərək email ünvanınızı təsdiqləyin.
+                            </p>
+
+                            <!-- CONFIRMATION BUTTON -->
+                            <a href="{{ConfirmationLink}}"
+                               class="confirm-button"
+                               style="display:inline-block; background-color:#f5b544; color:#182b49; padding:17px 38px; border-radius:9px; font-size:15px; font-weight:bold; text-decoration:none;">
+                                Email ünvanımı təsdiqlə
+                            </a>
+
+                            <!-- SECURITY INFO -->
+                            <div class="info-box"
+                                 style="background-color:#f7f9fc; border-radius:10px; padding:20px; margin-top:32px; text-align:left;">
+
+                                <p style="color:#64748b; font-size:13px; line-height:1.8; margin:0;">
+                                    🔒 <strong>Təhlükəsizlik məlumatı</strong>
+                                    <br><br>
+                                    Əgər bu hesabı siz yaratmamısınızsa,
+                                    bu emaili nəzərə almaya bilərsiniz.
+                                    Hesabınızı təsdiqləmədən heç bir
+                                    əlavə əməliyyat etməyiniz tələb olunmur.
+                                </p>
+                            </div>
+
+                            <p style="font-size:12px; color:#94a3b8; margin:28px 0 10px;">
+                                Düymə işləmirsə, aşağıdakı linki
+                                brauzerinizə kopyalayın:
+                            </p>
+
+                            <a href="{{ConfirmationLink}}"
+                               class="fallback-link"
+                               style="color:#64748b; font-size:12px; word-break:break-word;">
+                                {{ConfirmationLink}}
+                            </a>
+
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td class="footer" align="center"
+                            style="background-color:#f8fafc; padding:28px; border-top:1px solid #e8edf3;">
+
+                            <p style="font-weight:bold; color:#475569; font-size:13px;">
+                                PUSTOK BOOKSTORE
+                            </p>
+
+                            <p style="color:#94a3b8; font-size:12px;">
+                                Kitablarla dolu dünyaya xoş gəlmisiniz.
+                            </p>
+
+                            <p style="color:#94a3b8; font-size:12px;">
+                                © 2026 Pustok. Bütün hüquqlar qorunur.
+                            </p>
+
+                            <p style="color:#94a3b8; font-size:12px;">
+                                Bu avtomatik göndərilən emaildir.
+                                Zəhmət olmasa cavablandırmayın.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

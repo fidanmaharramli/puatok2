@@ -1,0 +1,13 @@
+﻿@using PustokMvcApp.Models
+@model Author
+<h1>Author Details</h1>
+<h1>@Model.FullName</h1>
+<p>Books</p>
+<ul>
+    @foreach (var book in Model.Books)
+    {
+        <li>@book.Name</li>
+    }
+    </ul>
+
+

@@ -1,0 +1,75 @@
+@using PustokMvcApp.Models
+@model Book
+<div class="modal-content">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="product-details-modal">
+        <div class="row">
+            <div class="col-lg-5">
+                @{
+                    var imageUrls = new List<string> { Model.MainImageUrl };
+                    if (Model.BookImages != null)
+                    {
+                        imageUrls.AddRange(Model.BookImages.OrderBy(image => image.Id).Select(image => image.ImageUrl));
+                    }
+                    imageUrls = imageUrls.Where(url => !string.IsNullOrWhiteSpace(url)).Distinct().ToList();
+                }
+                <div id="quickModalImages" class="product-details-slider arrow-type-two">
+                    @foreach (var imageUrl in imageUrls)
+                    {
+                        <div class="single-slide">
+                            <img src="@Url.Content(imageUrl)" alt="@Model.Name">
+                        </div>
+                    }
+                </div>
+                <div id="quickModalThumbnails" class="mt--30 product-slider-nav arrow-type-two">
+                    @foreach (var imageUrl in imageUrls)
+                    {
+                        <div class="single-slide">
+                            <img src="@Url.Content(imageUrl)" alt="@Model.Name">
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-7 mt--30 mt-lg--30">
+                <div class="product-details-info pl-lg--30">
+                    @if (Model.BookTags?.Count > 0)
+                    {
+                        <p class="tag-block">
+                            Tags:
+                            @foreach (var bookTag in Model.BookTags)
+                            {
+                                <span class="me-2">@bookTag.Tag.Name</span>
+                            }
+                        </p>
+                    }
+                    <h3 id="quickModalTitle" class="product-title">@Model.Name</h3>
+                    <ul class="list-unstyled">
+                        <li>Author: <span class="list-value font-weight-bold">@Model.Author?.FullName</span></li>
+                        <li>Product Code: <span class="list-value">@Model.Code</span></li>
+                        <li>Availability: <span class="list-value">@(Model.InStock ? "In Stock" : "Out of Stock")</span></li>
+                    </ul>
+                    <div class="price-block">
+                        @if (Model.DiscountPercent > 0)
+                        {
+                            var discountedPrice = Model.Price - Model.Price * Model.DiscountPercent / 100m;
+                            <span class="price-new">£@discountedPrice.ToString("F2")</span>
+                            <del class="price-old">£@Model.Price.ToString("F2")</del>
+                            <span class="price-discount">@Model.DiscountPercent%</span>
+                        }
+                        else
+                        {
+                            <span class="price-new">£@Model.Price.ToString("F2")</span>
+                        }
+                    </div>
+                    <article class="product-details-article">
+                        <h4 class="sr-only">Book description</h4>
+                        <p>@(string.IsNullOrWhiteSpace(Model.Description) ? "No description available." : Model.Description)</p>
+                    </article>
+                    <a asp-controller="Books" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outlined--primary">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

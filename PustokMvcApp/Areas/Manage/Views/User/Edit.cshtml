@@ -1,0 +1,51 @@
+@model UserEditVm
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<h1 class="h3 mb-4 text-gray-800">Edit User</h1>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <form asp-action="Edit" asp-route-id="@ViewContext.RouteData.Values["id"]" method="post">
+                    <input asp-for="ConcurrencyStamp" type="hidden" />
+                    <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+                    <partial name="_UserFields" model="Model" />
+                    <fieldset class="form-group">
+                        <legend class="h6">Roles</legend>
+                        @foreach (var role in Model.AvailableRoles)
+                        {
+                            <div class="form-check mb-2">
+                                <input type="checkbox" class="form-check-input" name="RoleIds"
+                                       id="role-@role.Value" value="@role.Value" checked="@Model.RoleIds.Contains(role.Value)" />
+                                <label class="form-check-label" for="role-@role.Value">@role.Text</label>
+                            </div>
+                        }
+                        <small class="form-text text-muted">Select one or more roles. Only Admin grants access to the admin panel.</small>
+                        <span asp-validation-for="RoleIds" class="text-danger"></span>
+                    </fieldset>
+                    <hr />
+                    <h2 class="h5">Change password</h2>
+                    <p class="text-muted">Leave both fields empty to keep the current password.</p>
+                    <div class="form-group">
+                        <label asp-for="NewPassword"></label>
+                        <input asp-for="NewPassword" class="form-control" autocomplete="new-password" aria-describedby="password-help" />
+                        <small id="password-help" class="form-text text-muted">Use at least 6 characters, including uppercase, lowercase, a number and a symbol.</small>
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmNewPassword"></label>
+                        <input asp-for="ConfirmNewPassword" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

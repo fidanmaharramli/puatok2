@@ -1,0 +1,124 @@
+﻿@using PustokMvcApp.Models
+@model List<Author>
+
+@{
+    var authors = Model;
+}
+
+<style>
+    .author-page {
+        padding: 24px;
+        background: #fff;
+        border: 1px solid #e3e6f0;
+        border-radius: 10px;
+        box-shadow: 0 3px 14px rgba(58, 59, 69, 0.06);
+    }
+
+        .author-page > .btn {
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .author-page .table-responsive {
+            border: 1px solid #e3e6f0;
+            border-radius: 6px;
+        }
+
+        .author-page .table {
+            margin-bottom: 0;
+            color: #3a3b45;
+        }
+
+            .author-page .table th,
+            .author-page .table td {
+                padding: 14px 18px;
+                vertical-align: middle;
+            }
+
+        .author-page thead th {
+            background: #f8f9fc;
+            border-top: 0;
+            color: #4e73df;
+        }
+
+        .author-page tbody th {
+            font-size: 13px;
+            font-weight: 400;
+            color: #6e707e;
+            white-space: nowrap;
+        }
+
+        .author-page tbody tr:hover {
+            background: #f8f9fc;
+        }
+
+        .author-page .author-actions {
+            white-space: nowrap;
+        }
+
+            .author-page .author-actions .btn + .btn {
+                margin-left: 6px;
+            }
+</style>
+
+<div class="author-page">
+    <a href="/manage/author/create" class="btn btn-success">Create New Author</a>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Settings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var author in authors)
+                    {
+                        <tr>
+                            <th>@author.Id</th>
+                            <td>@author.FullName</td>
+                            <td class="author-actions">
+                                <a href="/manage/author/edit/@author.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="/manage/author/delete/@author.Id" class="btn btn-sm btn-outline-danger deleteBtn ">Delete</a>
+                                <a href="/manage/author/details/@author.Id" class="btn btn-sm btn-outline-info">Details</a>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+</div>
+@section scripts {
+    <script>
+        $(".deleteBtn").click(function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Do you want to delete this author?",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var url = $(this).attr("href");
+
+                    fetch(url)
+                        .then(res => {
+                            if (res.ok) {
+                                Swal.fire("Deleted!", "", "success").then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire("Error!", "The author could not be deleted.", "error");
+                            }
+                        })
+                        .catch(() => {
+                            Swal.fire("Error!", "Could not connect to the server.", "error");
+                        });
+                }
+            });
+        });
+    </script>
+}

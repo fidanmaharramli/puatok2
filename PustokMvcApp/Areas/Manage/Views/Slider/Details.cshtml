@@ -1,0 +1,17 @@
+@using PustokMvcApp.Models
+@model Slider
+
+<h1>Slider Details</h1>
+<h1>@Model.Title</h1>
+<p>@Model.Description</p>
+
+@if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+{
+    <img src="@Model.ImageUrl" alt="@Model.Title" style="max-width: 400px; width: 100%; height: auto;" />
+}
+
+<p>Button Text: @Model.ButtonText</p>
+<p>Button URL: @Model.ButtonUrl</p>
+<p>Order: @Model.Order</p>
+
+<a asp-area="Manage" asp-controller="Slider" asp-action="Index" asp-route-id="" class="btn btn-secondary">Back to List</a>

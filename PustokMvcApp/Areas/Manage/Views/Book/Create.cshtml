@@ -1,0 +1,58 @@
+﻿@using PustokMvcApp.Areas.Manage.ViewModels.BookVms
+@{
+    var authors = ViewBag.Authors as List<Author>;  
+    var tags = ViewBag.Tags as List<Tag>;
+}
+@model BookCreateVm
+
+<form method="post" asp-action="Create" enctype="multipart/form-data">
+    <label asp-for="Name"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+    <label asp-for="Price"></label>
+    <input asp-for="Price" class="form-control" />
+    <span asp-validation-for="Price" class="text-danger"></span>
+    <label asp-for="DiscountPercent"></label>
+    <input asp-for="DiscountPercent" class="form-control" />
+    <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+    <label asp-for="MainFile"></label>
+    <input asp-for="MainFile" type="file" class="form-control" />
+    <span asp-validation-for="MainFile" class="text-danger"></span>
+    <label asp-for="HoverFile"></label>
+    <input asp-for="HoverFile" type="file" class="form-control" />
+    <span asp-validation-for="HoverFile" class="text-danger"></span>
+    <label asp-for="AuthorId"></label>
+    <select asp-for="AuthorId" class="form-control" asp-items="@(new SelectList(authors, "Id", "FullName"))">
+        <option value="">Select Author</option>
+    </select>
+    <span asp-validation-for="AuthorId" class="text-danger"></span>
+    <label asp-for="TagIds"></label>
+    <select asp-for="TagIds" class="form-control" asp-items="@(new SelectList(tags, "Id", "Name"))" multiple>
+        <option value="">Select Tags</option>
+    </select>
+    <span asp-validation-for="TagIds" class="text-danger"></span>
+    <label asp-for="Files"></label>
+    <input asp-for="Files" type="file" class="form-control" multiple />
+    <span asp-validation-for="Files" class="text-danger"></span>
+    <label asp-for="Description"></label>
+    <textarea asp-for="Description" class="form-control"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+    <label asp-for="IsFeatured"></label>
+    <input asp-for="IsFeatured" type="checkbox" class="form-check-input" />
+    <span asp-validation-for="IsFeatured" class="text-danger"></span>
+    <label asp-for="IsNew"></label>
+    <input asp-for="IsNew" type="checkbox" class="form-check-input" />
+    <span asp-validation-for="IsNew" class="text-danger"></span>
+    <label asp-for="Code"></label>
+    <input asp-for="Code" class="form-control" />
+    <span asp-validation-for="Code" class="text-danger"></span>
+    <label asp-for="InStock"></label>
+    <input asp-for="InStock" type="checkbox" class="form-check-input" />
+    <span asp-validation-for="InStock" class="text-danger"></span>
+    <button type="submit" class="btn btn-primary">Create</button>
+
+
+    </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

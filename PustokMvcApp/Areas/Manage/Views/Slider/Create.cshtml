@@ -1,0 +1,30 @@
+﻿@using PustokMvcApp.Areas.Manage.Views.Slider
+@model SliderCreateVm
+
+<form method="post" enctype="multipart/form-data">
+    <label asp-for="Title" class="form-label">Title</label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+    <label asp-for="ImageFile" class="form-label">Image</label>
+    <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+    <span accept="image/*"  asp-validation-for="ImageFile" class="text-danger"></span>
+    <label asp-for="Order" class="form-label">Order</label>
+    <input asp-for="Order" class="form-control" />
+    <span asp-validation-for="Order" class="text-danger"></span>
+    <label asp-for="Description" class="form-label">Description</label>
+    <input asp-for="Description" class="form-control" />
+    <span asp-validation-for="Description" class="text-danger"></span>
+    <label asp-for="ButtonUrl" class="form-label">Redirect Url</label>
+    <input asp-for="ButtonUrl" class="form-control" />
+    <span asp-validation-for="ButtonUrl" class="text-danger"></span>
+    <label asp-for="ButtonText" class="form-label">Button Text</label>
+    <input asp-for="ButtonText" class="form-control" />
+    <span asp-validation-for="ButtonText" class="text-danger"></span>
+
+    <button type="submit" class="btn btn-primary mt-3">Create</button>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}   
